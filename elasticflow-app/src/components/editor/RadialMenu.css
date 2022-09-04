@@ -1,0 +1,31 @@
+.radial-element {
+    fill-opacity: 0.77;
+    stroke: #000;
+    pointer-events: visibleStroke;
+}
+
+.radial-element:hover {
+    fill-opacity: 0.77;
+    stroke: #DB922C;
+}
+
+
+.elastic-flow-context-menu-item {
+    fill: #a6bbcf;
+    stroke: #999;
+    stroke-width: 1;
+}
+
+.elastic-flow-context-menu-item:hover {
+    stroke: #DB922C;
+    stroke-width: 2;
+}
+
+.elastic-flow-context-menu-item-cover {
+    fill:transparent;
+}
+
+.elastic-flow-context-menu-item-cover:hover {
+    stroke: #DB922C;
+    stroke-width: 2;
+}

@@ -1,0 +1,35 @@
+.logobg-container {
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    width: 200px;
+    height: 200px;
+    z-index: -1;
+}
+
+.logobg-svg {
+    display: block;
+    margin: auto;
+}
+
+.logobg-connector {
+    fill:none;
+    stroke-linecap:square;
+    stroke-width:3%;
+    stroke:#a4d5ff;
+}
+
+.logobg-cloud {
+    fill:none;
+    stroke-linecap:square;
+    stroke-width:3%;
+    stroke:#a4d5ff;
+}
+
+.logobg-text {
+    font-family: monospace;
+    font-size: 10px;
+    line-height: 1.25;
+    stroke-width: 3%;
+    fill: #a4d5ff;
+}

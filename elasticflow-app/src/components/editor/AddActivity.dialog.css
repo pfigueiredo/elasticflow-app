@@ -1,0 +1,18 @@
+.activity-search-list {
+    padding-top: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    gap: 5px;
+}
+
+.activity-search-card {
+    /* flex-basis: 100px;
+    max-width: 100px;
+    min-height: 100px; */
+    background-color: #a6bbcf;
+    padding: 5px !important;
+}

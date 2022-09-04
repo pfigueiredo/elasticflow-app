@@ -1,0 +1,44 @@
+.home-page-container {
+    position: absolute;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #49a7f9;
+}
+
+.home-page-particles {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.logo-svg {
+    margin-top: 75px;
+    display: block;
+    margin: auto
+}
+
+.logo-connector {
+    fill:none;
+    stroke-linecap:square;
+    stroke-width:3%;
+    stroke:#ffc032;
+}
+
+.logo-cloud {
+    fill:none;
+    stroke-linecap:square;
+    stroke-width:3%;
+    stroke:white
+}
+
+.logo-text {
+    font-family: monospace;
+    font-size: 10px;
+    line-height: 1.25;
+    stroke-width: 3%;
+    fill: white;
+}

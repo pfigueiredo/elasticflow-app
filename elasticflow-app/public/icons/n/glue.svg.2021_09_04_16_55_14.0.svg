@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="120"
+   height="120"
+   version="1.1"
+   viewBox="0 0 31.75 31.75"
+   id="svg12"
+   sodipodi:docname="glue.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs16" />
+  <sodipodi:namedview
+     id="namedview14"
+     pagecolor="#69666b"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="true"
+     showgrid="false" />
+  <ellipse
+     style="fill:none;stroke:#ffffff;stroke-width:1.05833333;stroke-linejoin:round;stroke-dasharray:none;stroke-miterlimit:4;stroke-opacity:1"
+     id="path1015"
+     cx="14.959135"
+     cy="14.978215"
+     rx="8.4335938"
+     ry="8.8342848" />
+  <path
+     id="path2085"
+     style="fill:none;stroke:#ffffff;stroke-width:1.05833;stroke-linejoin:round"
+     d="M 20.378005,14.997296 A 5.3425479,8.8152046 0 0 1 15.035457,23.812501 5.3425479,8.8152046 0 0 1 9.6929088,14.997296 5.3425479,8.8152046 0 0 1 15.035457,6.1820917 5.3425479,8.8152046 0 0 1 20.378005,14.997296 Z" />
+</svg>
