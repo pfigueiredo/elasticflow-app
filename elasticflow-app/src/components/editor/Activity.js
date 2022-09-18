@@ -5,6 +5,9 @@ import FlowAddress from './ViewModels/FlowAddress';
 import nodes from './Activities/Nodes';
 import Port from './Port';
 import snapToGrid from './Utils/Grid';
+import ShallowEqual from './Utils/ShallowCompare';
+
+const defaultColor = "#79a7d2";
 
 function Activity(props) {
     
@@ -34,7 +37,7 @@ function Activity(props) {
             <rect className="elastic-flow-node-button-background" rx="5" ry="5" width="32" height="26"></rect>
             <rect className="elastic-flow-node-button-button" x="5" y="4" rx="4" ry="4" width="16" height="18" fill="#a6bbcf"></rect>
         </g> */}
-        <rect className="elastic-flow-node" rx="2" ry="2" fill="#a6bbcf" width="180" height="30"></rect>
+        <rect className="elastic-flow-node" rx="2" ry="2" fill={activity.color ?? defaultColor} width="180" height="30"></rect>
         <g className="elastic-flow-node-icon-group" x="0" y="0" transform="" /*style="pointer-events: none;"*/>
             <rect x="0" y="0" className="elastic-flow-node-icon-shade" width="30" height="30"></rect>
             <image href={"/icons/" + nodeIcon} className="elastic-flow-node-icon" x="0" width="30" height="30" y="0"></image>
@@ -59,6 +62,15 @@ function Activity(props) {
         <text className="elastic-flow-node-status-label" x="20" y="10"></text>
     </g>
      */
+
+    const Comments = function (props) {
+        if (props.showComment || true) {
+            return <g transform="translate(0, -5)">
+                <text className='elastic-flow-node-comment'>{props.comment ?? ""}</text>
+            </g>
+        } else 
+            return <></>
+    }
 
     const ChangedAttribute = function (props) {
         if (props.changed && props.error)
@@ -163,10 +175,21 @@ function Activity(props) {
             <ActivityRect></ActivityRect>
             <ChangedAttribute changed={changed} error={error}></ChangedAttribute>
             <ErrorAttribute error={error}></ErrorAttribute>
-
+            <Comments comment={activity.comment}></Comments>
             { activity.outputs.map((io) => <Port key={io.key} io={io}></Port>) }
 
         </g>;
 }
 
-export default Activity;
+export default React.memo(
+    Activity, (props, nextProps) => { 
+        const current = props.activity ?? {};
+        const next = nextProps.activity ?? {};
+        return (
+            current === next || (
+                ShallowEqual(current, next) && 
+                ShallowEqual(current.position, next.position)
+            )
+        )
+    }
+);

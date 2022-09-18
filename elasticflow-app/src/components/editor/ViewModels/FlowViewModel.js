@@ -71,6 +71,7 @@ class FlowViewModel {
                 name: node.name ?? "unnamed activity",
                 type: type ?? "unknown",
                 position: position,
+                color: node.color ?? null,
                 outputs: node.outputs ?? [],
                 inputs: node.inputs ?? []
 
@@ -108,8 +109,11 @@ class ActivityViewModel {
         this.address = data.address ?? "A" + flow.keySeed;
         this.name = data.name ?? "unnamed activity";
         this.type = data.type ?? "unknown";
+        this.color = data.color ?? null;
+        this.comment = data.comment ?? null;
         this.properties = data.properties ?? {}
         this.hasErrorOutput = data.hasErrorOutput ?? false;
+        this.yieldExecution = data.yieldExecution ?? false;
         this.position = {
             x: data.position?.x ?? 100,
             y: data.position?.y ?? 100
@@ -130,8 +134,13 @@ class ActivityViewModel {
             address: this.address,
             name: this.name,
             type: this.type,
+            color: this.color,
+            comment: this.comment,
+            showComment: this.showComment,
+            commentPosition: this.commentPosition,
             properties: this.properties,
             hasErrorOutput: this.hasErrorOutput,
+            yieldExecution: this.yieldExecution,
             position: this.position,
             inputs: this.inputs.map(io => io.getDataForSerialization()),
             outputs: this.outputs.map(io => io.getDataForSerialization())

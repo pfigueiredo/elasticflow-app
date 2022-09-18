@@ -13,7 +13,7 @@ function ActivityOutput({output}) {
     }
 
     const outputOptions = [
-        { label: "async", value: 0 },
+        { label: "normal", value: 0 },
         { label: "remote", value: 1 }
     ];
 

@@ -1,10 +1,12 @@
 import React, { lazy, useEffect, useState } from 'react';
 import nodes from './Nodes';
-import { FormGroup, InputGroup, Tab, Tabs, Switch } from '@blueprintjs/core';
-import { Tooltip2 } from "@blueprintjs/popover2";
+import { FormGroup, InputGroup, Tab, Tabs, Switch, TextArea, Button } from '@blueprintjs/core';
+import { SliderPicker } from 'react-color';
 import { emitCustomEvent } from 'react-custom-events';
 import ActivityOutput from './ActivityOutput';
 import './ActivityProperties.css'
+
+const defaultColor = "#79a7d2";
 
 const importView = viewName =>
   lazy(() =>
@@ -20,8 +22,11 @@ function ActivityProperties({activity}) {
 
     const [views, setViews] = useState([]);
     const [name, setName] = useState(activity?.name ?? "");
+    const [comment, setComment] = useState(activity?.comment ?? "");
+    const [color, setColor] = useState(activity?.color ?? defaultColor);
+    const [allowExtraPorts, setAllowExtraPorts] = useState(activity?.allowExtraPorts);
     const [hasErrorOutput, setHasErrorOutput] = useState(activity?.hasErrorOutput ?? false);
-    const [commitOnOutput, setCommitOnOutput] = useState(activity?.commitOnOutput ?? false);
+    const [yieldExecution, setYieldExecution] = useState(activity?.yieldExecution ?? false);
     const [io] = useState({ outputs: activity?.outputs ?? []});
 
     const verticalFlexContainerStyle = {
@@ -36,6 +41,17 @@ function ActivityProperties({activity}) {
         flexGrow: 1
     }
 
+    function onColorChange(color) {
+        if (!!activity) {
+            activity.color = color;
+            setColor(color);
+            emitCustomEvent('activity:change', {
+                address: activity.address,
+                activity: activity
+            });
+        }
+    }
+
     function onNameChange(e) {
         if (!!activity) {
             let name = e.target.value;
@@ -48,19 +64,41 @@ function ActivityProperties({activity}) {
         }
     }
 
+    function handleAddOutput(e) {}
+
+    function handleChangeComment(e) {
+        if (!!activity) {
+            let value = e.target.value;
+            activity.comment = value;
+            setComment(value);
+            emitCustomEvent('activity:change', {
+                address: activity.address,
+                activity: activity
+            });
+        }
+    }
+
     function handleChangeHasErrorOutput(e) {
         if (!!activity) {
             let value = e.currentTarget.checked;
             activity.hasErrorOutput = value;
             setHasErrorOutput(value);
+            emitCustomEvent('activity:change', {
+                address: activity.address,
+                activity: activity
+            });
         }
     }
 
-    function handleChangeCommitOnOutput(e) {
+    function handleChangeYieldExecution(e) {
         if (!!activity) {
             let value = e.currentTarget.checked;
-            activity.commitOnOutput = value;
-            setCommitOnOutput(value);
+            activity.yieldExecution = value;
+            setYieldExecution(value);
+            emitCustomEvent('activity:change', {
+                address: activity.address,
+                activity: activity
+            });
         }
     }
 
@@ -94,20 +132,59 @@ function ActivityProperties({activity}) {
         </div>
     }
 
+    const AddOutputButton = () => {
+        if (allowExtraPorts) {
+            return <Button 
+                intent="primary" fill={true} alignText="left" icon="add" style={{marginTop:"10px", marginBottom:"10px"}} onClick={handleAddOutput}></Button>
+            
+        } else
+            return <></>
+    }
+
     const RenderOutputProperties = () => {
         return <>
             <FormGroup 
                 helperText="Does this activity have an adicional output for catching errors?"
                 fill={true}>
-                <Switch checked={activity.hasErrorOutput} label="Error Output" onChange={e => handleChangeHasErrorOutput(e)} />
+                <Switch checked={hasErrorOutput} label="Error Output" onChange={e => handleChangeHasErrorOutput(e)} />
             </FormGroup>
             <FormGroup 
-                helperText="Commit process on output?"
+                helperText="After executing the activity save all the process messages and continue asynchronously?"
                 fill={true}>
-                <Switch checked={activity.commitOnOutput} label="Do Commit" onChange={e => handleChangeCommitOnOutput(e)} />
+                <Switch checked={yieldExecution} label="Yield Execution" onChange={e => handleChangeYieldExecution(e)} />
             </FormGroup>
             <h4>Output Definition</h4>
             {io.outputs.map(output => <ActivityOutput output={output}></ActivityOutput>)}
+            <AddOutputButton/>
+        </>
+    }
+
+    const RenderAppearance = () => {
+        return <>
+            <FormGroup
+                helperText="Provide some description of the actions that this activity performs"
+                label="Description / Comment"
+                labelFor="txt-comment"
+            >
+                <TextArea 
+                    id="txt-comment" 
+                    fill={true}
+                    value={comment}
+                    onChange={e => handleChangeComment(e)}
+                ></TextArea>
+            </FormGroup>
+            <FormGroup
+                helperText="The activity base color helps to group activities by color"
+                label="customize the base color of this activity "
+                labelFor="icon-color-picker"
+            >
+                <div style={{margin: "10px 0px"}}>
+                    <SliderPicker id='icon-color-picker' 
+                        color={color} 
+                        onChange={(color) => { onColorChange(color.hex ?? defaultColor) }}
+                    ></SliderPicker>
+                </div>
+            </FormGroup>
         </>
     }
 
@@ -118,6 +195,7 @@ function ActivityProperties({activity}) {
         <Tabs>
             <Tab id="p" title="Properties" panel={RenderProperties()}/>
             <Tab id="o" title="Outputs" panel={RenderOutputProperties()}/>
+            <Tab id="a" title="Appearance" panel={RenderAppearance()}/>
         </Tabs>
     </>
 }

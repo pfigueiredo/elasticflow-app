@@ -1,7 +1,7 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button, Spinner } from '@blueprintjs/core';
 import { emitCustomEvent, useCustomEventListener } from 'react-custom-events'
-import { useFlowData, useFlowMutation, useFlowCache, useFlowDelete } from '../../datahooks/useFlowsData'
+import { useFlowData, useFlowMutation } from '../../datahooks/useFlowsData'
 import FlowViewModel from './ViewModels/FlowViewModel.js'
 import snapToGrid from './Utils/Grid';
 import './Editor.css'
@@ -118,6 +118,10 @@ export const Editor = (props) => {
 
     }
 
+    function addNode() {
+        emitCustomEvent('editor:openAddActivityDialog', { callback: null, position: {x: 10, y: 75} })
+    }
+
     function openAddListDialog(callback, position) {
         console.log("and node extra called");
         emitCustomEvent('editor:openAddActivityDialog', { callback: callback, position: position });
@@ -227,9 +231,13 @@ export const Editor = (props) => {
         <CodeEditor editor={editorStatus}></CodeEditor>
         <AddActivityDialog></AddActivityDialog>
         <Loader/>
-        <Button intent='success' icon="floppy-disk"
-            style={{position: "absolute", top: "60px", right: "10px", zIndex: "2"}} onClick={() => saveFlow()}
-            >Save Flow Definition</Button>
+        <div style={{position: "absolute", top: "60px", right: "10px", zIndex: "2"}}>
+            <Button icon="plus" intent='primary' onClick={() => addNode()} style={{marginRight: "20px"}}></Button>
+            <Button intent='success' icon="floppy-disk"
+                onClick={() => saveFlow()}
+                >Save Flow Definition</Button>
+        </div>
+        
         </>
     )
 

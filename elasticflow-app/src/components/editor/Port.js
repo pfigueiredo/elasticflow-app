@@ -63,4 +63,8 @@ function Port(props) {
         </g>
 }
 
-export default Port;
+export default React.memo(Port, (prev, next) => {
+    const previo = prev.io ?? {};
+    const nextio = next.io ?? {};
+    return (previo.color !== nextio.color || previo.name !== nextio.name);
+});

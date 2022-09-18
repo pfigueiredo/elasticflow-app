@@ -17,9 +17,21 @@ nodes["core:function"] = {
     description: "a user defined node/activity coded in javascript",
     inputs: [ { address: "I1", type: "sync" } ],
     outputs: [ { address: "O1", type: "sync" } ],
+    allowExtraPorts: true,
     properties: {
         functionCode: `//The default function only relays the current msg to the next activity\ncontext.continueWith(msg);`
     }
+}
+
+nodes["core:catch"] = {
+    isNode: true,
+    color: "#d27979",
+    icon: "n/catch.svg",
+    name: "Catch Error",
+    description: "catch an error thown in the current flow in the same process",
+    inputs: [],
+    outputs: [ { address: "O1", type: "sync" } ],
+    properties: { }
 }
 
 nodes["core:assign"] = {
@@ -37,6 +49,7 @@ nodes["core:switch"] = {
     name: "Split/Switch",
     description: "switches the execution into several conditional paths",
     inputs: [ { address: "I1", type: "sync" } ],
+    allowExtraPorts: true,
     outputs: [ 
         { name: "true", address: "O1", type: "sync" },
         { name: "false", address: "O2", type: "sync" } 
@@ -108,7 +121,9 @@ nodes["http:call"] = {
 
 nodes.fillInDefautls = function(node) {
     if (node?.type) {
+        debugger;
         let prototype = nodes[node.type];
+        node.allowExtraPorts = prototype.allowExtraPorts ?? false;
         if (!node.properties) node.properties = {};
         if (prototype.properties) {
             for (var key in prototype.properties) {

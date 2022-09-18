@@ -9,7 +9,6 @@ import { Drawer, DrawerSize, Position } from '@blueprintjs/core';
 
 function CodeEditor(props) {
 
-  const [fullscreen, setFullscreen] = useState(true);
   const [show, setShow] = useState(false);
   const [codeObject, setCodeObject] = useState({ code: "", path: "empty.js" });
   const [object, setObject] = useState(null);
@@ -24,7 +23,6 @@ function CodeEditor(props) {
       );
       setObject(data.activity);
       setObjectType("activity");
-      setFullscreen(true);
       setShow(true);
       data.activity.hasErrors = false;
       data.activity.hasWarnings = false;
@@ -43,9 +41,9 @@ function CodeEditor(props) {
   }
 
 
-  function cancelChanges() {
-    setShow(false);
-  }
+  // function cancelChanges() {
+  //   setShow(false);
+  // }
 
   const monacoRef = useRef(null);
   const monacoRootRef = useRef(null);
@@ -109,6 +107,9 @@ function CodeEditor(props) {
 
     const editor = monacoRef?.current;
     const monaco = monacoRootRef?.current;
+    const activity = object;
+    activity.hasErrors = false;
+    activity.hasWarnings = false;
 
     if (!!editor) {
       const model = editor.getModel();

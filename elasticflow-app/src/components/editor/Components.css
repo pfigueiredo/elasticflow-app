@@ -10,6 +10,13 @@
     stroke: none;
 }
 
+.elastic-flow-node-comment {
+    font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    stroke: none;
+    font-style: italic;
+}
+
 .node_label_italic,.elastic-flow-node-label-italic{
     font-style:italic
 }

@@ -2,16 +2,23 @@ const esLintConfig = {
     "env": {
       "browser": false,
       "node": false,
-      "es6": true
+      "es8": true
     },
 
     "globals": {
         "msg": "writable",
         "payload": "writable",
         "context": "readonly",
-        "http": "readonly"
+        "http": "readonly",
+        "activity": "readonly",
+        "process": "readonly",
+        "flow": "readonly",
     },
-  
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "ecmaFeatures": { }
+    },
     "ecmaFeatures": {
       "arrowFunctions": true,
       "binaryLiterals": true,

@@ -1,67 +1,70 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { emitCustomEvent, useCustomEventListener } from 'react-custom-events';
 import FlowAddress from './ViewModels/FlowAddress';
 import generateLinkPath from './Utils/LinkPath';
 import './Components.css'
 
+function getCoords(source, destination, wire, startDragging, ovx, ovy) {
+    let width = 180;
+    let xoffset = 0;
+    let yoffset = 15;
+    startDragging = startDragging ?? false;
+
+    let start = {
+        x: source.position.x + xoffset + width,
+        y: source.position.y + wire.posY + 5,
+    };
+
+    if (!destination && !!startDragging) {
+        ovx = start.x;
+        ovy = start.y;
+    }
+
+    let end = {
+        x: ovx ?? destination.position.x + xoffset - 10,
+        y: ovy ?? destination.position.y + yoffset,
+    };
+
+    let labelPos = (wire?.labelPos) 
+        ? { 
+            x: (start.x + end.x) / 2 + 10,
+            y: (start.y + end.y) / 2 - 5,
+            cx: wire.labelPos.cx, 
+            cy: wire.labelPos.cy, 
+        }
+        : {
+            x: (start.x + end.x) / 2 + 10,
+            y: (start.y + end.y) / 2 - 5,
+            cx: 0, cy: 0
+    }
+
+    let path = generateLinkPath(start.x, start.y, end.x, end.y, 1);
+
+    return { 
+        start: start, 
+        end: end, 
+        path: path, 
+        labelPos: labelPos,
+        endActive: !!startDragging
+    };
+}
+
 function Wire(props) {
 
-    let wire = props.wire;
-    let destination = wire.destination ?? null;
-    let source = wire.source ?? null;
+    console.log(`draw wire: ${props.wire.address}`);
 
-    let highlight = (source?.selected || destination?.selected);
-    let solidDashArray = "28,2"; // highlight ? "28,2" : "0";
+    const wire = props.wire;
+    const destination = wire.destination ?? null;
+    const source = wire.source ?? null;
 
-    let dashArray = (((wire.type ?? 0) === 0) ? solidDashArray : "15,2,2,2,2,2,15,10");
-    let classes = highlight ? "elastic-flow-wire-selected" : "elastic-flow-wire";
+    const highlight = (source?.selected || destination?.selected);
+    const solidDashArray = "28,2"; // highlight ? "28,2" : "0";
+    const remoteDash = "10,5"; //"8,2,2,2,2,2,8,4"
 
-    const [coords, setCoords] = useState(() => getCoords(source, destination, wire, props.dragging));
+    const dashArray = (((wire.io?.type?.toString() ?? "1") === "1") ? remoteDash: solidDashArray);
+    const classes = highlight ? "elastic-flow-wire-selected" : "elastic-flow-wire";
 
-    function getCoords(source, destination, wire, startDragging, ovx, ovy) {
-        let width = 180;
-        let xoffset = 0;
-        let yoffset = 15;
-        startDragging = startDragging ?? false;
-
-        let start = {
-            x: source.position.x + xoffset + width,
-            y: source.position.y + wire.posY + 5,
-        };
-    
-        if (!destination && !!startDragging) {
-            ovx = start.x;
-            ovy = start.y;
-        }
-
-        let end = {
-            x: ovx ?? destination.position.x + xoffset - 10,
-            y: ovy ?? destination.position.y + yoffset,
-        };
-
-        let labelPos = (wire?.labelPos) 
-            ? { 
-                x: (start.x + end.x) / 2 + 10,
-                y: (start.y + end.y) / 2 - 5,
-                cx: wire.labelPos.cx, 
-                cy: wire.labelPos.cy, 
-            }
-            : {
-                x: (start.x + end.x) / 2 + 10,
-                y: (start.y + end.y) / 2 - 5,
-                cx: 0, cy: 0
-        }
-
-        let path = generateLinkPath(start.x, start.y, end.x, end.y, 1);
-
-        return { 
-            start: start, 
-            end: end, 
-            path: path, 
-            labelPos: labelPos,
-            endActive: !!startDragging
-        };
-    }
+    const [coords, setCoords] = useState(() => getCoords(source, destination, wire, props.dragging));    
 
     useCustomEventListener('activity:move', data => {
         let address = data.address;
@@ -224,21 +227,25 @@ function Wire(props) {
     }); 
     
     const MakeWire = React.memo((props) => {
-        let wireDef = []
-        if (source?.commitOnOutput) { //filter="url(#double)"
-            wireDef.push(<path d={coords.path} style={{
-                strokeWidth: 5,
-                stroke: "#444",
-                fill: "none"
-            }}/>);
-            wireDef.push(<path d={coords.path} style={{
-                strokeWidth: 4,
-                stroke: "#FFF",
-                fill: "none"
-            }}/>);
-        }
+        const wire = props.wire;
+        const coords = props.coords;
+        const classes = props.classes;
+
+        const wireDef = []
+        // if (source?.commitOnOutput) { //filter="url(#double)"
+        //     wireDef.push(<path d={coords.path} style={{
+        //         strokeWidth: 5,
+        //         stroke: "#444",
+        //         fill: "none"
+        //     }}/>);
+        //     wireDef.push(<path d={coords.path} style={{
+        //         strokeWidth: 4,
+        //         stroke: "#FFF",
+        //         fill: "none"
+        //     }}/>);
+        // }
         wireDef.push(
-            <path id={wire.address} className={classes} d={coords.path} markerEnd="url(#wireEndArrow)" style={{
+            <path id={wire.key} className={classes} d={coords.path} markerEnd="url(#wireEndArrow)" style={{
                 strokeDasharray: dashArray,
                 fill: "none",
                 cursor: 'pointer'
@@ -246,6 +253,8 @@ function Wire(props) {
         );
         console.log(wire.address);
         return <>{wireDef}</>
+    }, (prev, next) => {
+        return prev?.path === next.path || props?.wire === next?.wire
     });
 
     if (!wire) return <></>
@@ -261,7 +270,7 @@ function Wire(props) {
             transform={"translate(" + coords.labelPos.cx + "," + coords.labelPos.cy + ")"}
             >{wire.name}</text> */}
     </g>
-    <MakeWire {...props}></MakeWire>
+    <MakeWire coords={coords} wire={wire} classes={classes}></MakeWire>
     <text dy="20"
         onPointerDown={handleLabelPointerDown}
         onPointerUp={handleLabelPointerUp}
@@ -279,4 +288,6 @@ function Wire(props) {
     </>
 }
 
-export default React.memo((props) => <Wire {...props}/>);
+export default React.memo(
+    (props) => <Wire wire={props.wire} dragging={props.dragging}/>
+);
