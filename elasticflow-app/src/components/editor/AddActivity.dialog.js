@@ -15,7 +15,7 @@ function filterNodeList(availableNodes, searchQuery) {
         n => n.type?.indexOf(searchQuery) >= 0 
             || n.name?.indexOf(searchQuery) >= 0
             || n.description?.indexOf(searchQuery) >= 0
-    ).slice(0, 10);
+    ).slice(0, 20);
 }
 
 export const AddActivityDialog = (props) => {
@@ -54,10 +54,10 @@ export const AddActivityDialog = (props) => {
         return (
             <div className="activity-search-list">
                 { filteredNodeList.map(
-                    n => <Card interactive={true} elevation={Elevation.ONE} className="activity-search-card" 
+                    n => <Card interactive={true} elevation={Elevation.ONE} className="activity-search-card" style={{backgroundColor: (n?.color ?? "rgb(121, 167, 210)")}}
                         onClick={() => handleAddActivity(n.type)}>
-                        <img width={50} src={`/icons/${n.icon}`} alt=""></img>
-                        {n.name} ({n.type})
+                        <img width={50} src={`/icons/${n.icon}`} alt={n.type}></img>
+                        {n.name} <span>({n.type})</span>
                     </Card>
                 )}
             </div>

@@ -13,6 +13,21 @@
     /* flex-basis: 100px;
     max-width: 100px;
     min-height: 100px; */
-    background-color: #a6bbcf;
+    /* background-color: rgb(121, 167, 210) !important; */
     padding: 5px !important;
+    height: 32px;
+    width: 225px;
+}
+
+.activity-search-card img {
+    float: left;
+    width: 32px;
+    height: 32px;
+    margin-top: -5px;
+    margin-right: 5px;
+}
+
+.activity-search-card span {
+    font-style: italic;
+    font-size: 11px;
 }

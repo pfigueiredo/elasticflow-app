@@ -10,6 +10,17 @@ nodes["core:start"] = {
     properties: { }
 }
 
+nodes["core:end"] = {
+    isNode: true,
+    icon: "n/stop.svg",
+    name: "End",
+    color: "#d27979",
+    inputs: [ { address: "I1", type: "sync" } ],
+    description: "flow endpoint, end current branch and returns any messages back if in sync mode",
+    outputs: [ ],
+    properties: { }
+}
+
 nodes["core:function"] = {
     isNode: true,
     icon: "n/fx.svg",
@@ -21,6 +32,16 @@ nodes["core:function"] = {
     properties: {
         functionCode: `//The default function only relays the current msg to the next activity\ncontext.continueWith(msg);`
     }
+}
+
+nodes["core:log"] = {
+    isNode: true,
+    icon: "n/log.svg",
+    name: "Log Execution",
+    description: "log values to the execution console",
+    inputs: [ { address: "I1", type: "sync" } ],
+    outputs: [ { address: "O1", type: "sync" } ],
+    properties: { }
 }
 
 nodes["core:catch"] = {
@@ -43,16 +64,100 @@ nodes["core:assign"] = {
     outputs: [ { address: "O1", type: "sync" } ]
 }
 
+nodes["core:if"] = {
+    isNode: true,
+    icon: "n/if2.svg",
+    name: "If and Else Switch",
+    description: "switches the execution based on the evaluation of a boolean expression",
+    inputs: [ { address: "I1", type: "sync" } ],
+    outputs: [ 
+        { name: "then", address: "O1", type: "sync" },
+        { name: "else", address: "O2", type: "sync" } 
+    ]
+}
+
+nodes["core:fork"] = {
+    isNode: true,
+    icon: "n/fork.svg",
+    name: "Fork",
+    description: "forks the execution into several paths",
+    inputs: [ { address: "I1", type: "sync" } ],
+    allowExtraPorts: true,
+    outputs: [ 
+        { name: "Path 1", address: "O1", type: "sync" },
+        { name: "Path 2", address: "O2", type: "sync" } 
+    ],
+    properties: {
+        conditions: []
+    }
+}
+
+nodes["core:foreach"] = {
+    isNode: true,
+    icon: "n/loop.svg",
+    name: "For Each",
+    description: "loop the execution for each element of a list",
+    inputs: [ { address: "I1", type: "sync" } ],
+    outputs: [ 
+        { name: "Continue", address: "O1", type: "sync" },
+        { name: "Loop", address: "O2", type: "sync", color:"yellow" } 
+    ],
+    properties: {
+        conditions: []
+    }
+}
+
+nodes["core:continue"] = {
+    isNode: true,
+    icon: "n/continue.svg",
+    name: "Continue",
+    description: "forces the imediate trigger of the next iteraction in a loop",
+    inputs: [ { address: "I1", type: "sync" } ],
+    outputs: [],
+    properties: {
+        conditions: []
+    }
+}
+
+nodes["core:break"] = {
+    isNode: true,
+    icon: "n/continue.svg",
+    name: "Continue",
+    description: "breaks the current loop and continues",
+    inputs: [ { address: "I1", type: "sync" } ],
+    outputs: [],
+    properties: {
+        conditions: []
+    }
+}
+
+nodes["core:loop"] = {
+    isNode: true,
+    icon: "n/loop.svg",
+    name: "Loop",
+    description: "loop the execution a number of times",
+    inputs: [ { address: "I1", type: "sync" } ],
+    outputs: [ 
+        { name: "Continue", address: "O1", type: "sync" },
+        { name: "Loop", address: "O2", type: "sync", color:"yellow" } 
+    ],
+    properties: {
+        conditions: []
+    }
+}
+
+
 nodes["core:switch"] = {
     isNode: true,
-    icon: "n/if.svg",
+    icon: "n/switch.svg",
     name: "Split/Switch",
     description: "switches the execution into several conditional paths",
     inputs: [ { address: "I1", type: "sync" } ],
     allowExtraPorts: true,
     outputs: [ 
-        { name: "true", address: "O1", type: "sync" },
-        { name: "false", address: "O2", type: "sync" } 
+        { name: "A", address: "O1", type: "sync" },
+        { name: "B", address: "O2", type: "sync" },
+        { name: "C", address: "O3", type: "sync" } 
     ]
 }
 
@@ -121,7 +226,7 @@ nodes["http:call"] = {
 
 nodes.fillInDefautls = function(node) {
     if (node?.type) {
-        debugger;
+        // debugger;
         let prototype = nodes[node.type];
         node.allowExtraPorts = prototype.allowExtraPorts ?? false;
         if (!node.properties) node.properties = {};

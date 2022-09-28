@@ -13,9 +13,31 @@
     padding-bottom: 5px;
 }
 
+.log-item-user {
+    background-color: white;
+    border: solid 1px #d9d9d9;
+    padding: 4px;
+    margin: 0px;
+    border-collapse: collapse;
+    border-radius: 10px;
+}
+
+.log-time-user {
+    color: #2d72d2;
+}
+
 .log-time {
-    /* font-size: 11px; */
     color: gray;
+}
+
+.log-item-NOTE {
+    color: gray;
+    font-style: italic;
+}
+
+.log-item-DEBUG {
+    color: gray;
+    font-style: italic;
 }
 
 .log-item-TRACE {

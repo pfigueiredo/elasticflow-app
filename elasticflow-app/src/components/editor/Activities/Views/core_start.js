@@ -22,7 +22,7 @@ const eventOptions = [
 function getStartTypeIndex(startTypeName) {
     for (let i = 0; i < startOptions.length; i++) {
         const op = startOptions[i];
-        if (op.type == startTypeName) {
+        if (op.type?.toString() === startTypeName?.toString()) {
             return i;
         }
     }
@@ -33,9 +33,9 @@ function getEventOptions(startType, method) {
     let fullFind, partialFind
     for (let i = 0; i < eventOptions.length; i++) {
         const op = eventOptions[i];
-        if (op.startType == startType && !partialFind)
+        if (op.startType?.toString() === startType?.toString() && !partialFind)
             partialFind = op;
-        if (op.startType == startType && op.method == method ) {
+        if (op.startType?.toString() === startType && op.method?.toString() === method?.toString) {
             fullFind = op;
             break;
         }
@@ -45,13 +45,13 @@ function getEventOptions(startType, method) {
 }
 
 function filterEventOptions(startType) {
-    return eventOptions.filter(o => o.startType == startType);
+    return eventOptions.filter(o => o.startType?.toString() === startType?.toString());
 }
 
 function View({activity}) {
 
-    const startTypeName = activity?.properties?.type ?? 0;
-    const startMethod = activity?.properties?.method ?? null;
+    const startTypeName = activity?.properties?.type ?? "http";
+    const startMethod = activity?.properties?.method ?? "GET";
     const startType = getStartTypeIndex(startTypeName);
 
     const [stateNumber, setStateNumber] = useState(0);

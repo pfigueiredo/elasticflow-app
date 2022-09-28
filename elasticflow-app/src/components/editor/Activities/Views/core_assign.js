@@ -23,7 +23,12 @@ function View({activity}) {
         { label: "number",   value: "1" },
         { label: "js expr.", value: "2" },
         { label: "jsonata",  value: "3" },
-        { label: "http get", value: "4" }
+        { label: "http get", value: "4" },
+        { label: "flow data", value: "5" },
+        { label: "activity data", value: "6" },
+        { label: "process data", value: "7" },
+        { label: "payload", value: "8" },
+        { label: "msg", value: "9" }
     ];
 
     const baseState = { ...activity?.properties, assignments: activity?.properties?.assignments ?? [] };
@@ -103,6 +108,11 @@ function View({activity}) {
                 case "2": itemExpression = "" + value + ""; break;
                 case "3": itemExpression = 'await jsonAta("' + value + '")'; break;
                 case "4": itemExpression = 'await httpGet("' + value + '")'; break;
+                case "5": itemExpression = 'await flow.data.getValue("' + value + '")'; break;
+                case "6": itemExpression = 'await activity.data.getValue("' + value + '")'; break;
+                case "7": itemExpression = 'await process.data.getValue("' + value + '")'; break;
+                case "8": itemExpression = 'msg.payload["' + value + '"]'; break;
+                case "9": itemExpression = 'msg["' + value + '"]'; break;
                 default: itemExpression = type;
             }
 

@@ -6,8 +6,9 @@ function Port(props) {
 
     let io = props.io;
 
-    var translateY = io.posY;
-    let translate = "translate(175," + translateY + ")"
+    var translateY = io.posY + 1;
+    let translateX = 184 - 6;
+    let translate = "translate(" + translateX + "," + translateY + ")"
     let color = io.color;
 
     const [status, setStatus] = useState({ active: false});
@@ -52,14 +53,14 @@ function Port(props) {
             onPointerDown={handleOutputPointerDown}
             onPointerUp={handleOutputPointerUp}
         >
-            <rect style={ioStyle} rx="3" ry="3" width="10" height="10" className="elastic-flow-port"></rect>
+            <rect style={ioStyle} rx="2" ry="2" width="12" height="8" className="elastic-flow-port"></rect>
         </g>
     } else
         return <g key={io.key} className="elastic-flow-port-output" transform={translate}
             onPointerDown={handleOutputPointerDown}
             onPointerUp={handleOutputPointerUp}
         >
-            <rect rx="3" ry="3" width="10" height="10" className="elastic-flow-port"></rect>
+            <rect rx="2" ry="2" width="12" height="8" className="elastic-flow-port"></rect>
         </g>
 }
 

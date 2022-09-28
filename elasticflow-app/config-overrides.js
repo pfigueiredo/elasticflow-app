@@ -1,7 +1,7 @@
 
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
+//const webpack = require('webpack');
 
-const webpack = require('webpack');
 module.exports = function override(config, env) {
     // config.resolve.fallback = {
     //     assert: require.resolve('assert'),

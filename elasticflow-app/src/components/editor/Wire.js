@@ -5,9 +5,9 @@ import generateLinkPath from './Utils/LinkPath';
 import './Components.css'
 
 function getCoords(source, destination, wire, startDragging, ovx, ovy) {
-    let width = 180;
+    let width = 184;
     let xoffset = 0;
-    let yoffset = 15;
+    let yoffset = 16;
     startDragging = startDragging ?? false;
 
     let start = {
@@ -38,7 +38,7 @@ function getCoords(source, destination, wire, startDragging, ovx, ovy) {
             cx: 0, cy: 0
     }
 
-    let path = generateLinkPath(start.x, start.y, end.x, end.y, 1);
+    let path = generateLinkPath(start.x, start.y, end.x, end.y, wire?.io?.index, (wire.io.activity.outputs.length ?? 1));
 
     return { 
         start: start, 
@@ -51,7 +51,7 @@ function getCoords(source, destination, wire, startDragging, ovx, ovy) {
 
 function Wire(props) {
 
-    console.log(`draw wire: ${props.wire.address}`);
+    //console.log(`draw wire: ${props.wire.address}`);
 
     const wire = props.wire;
     const destination = wire.destination ?? null;
@@ -251,7 +251,7 @@ function Wire(props) {
                 cursor: 'pointer'
             }}/>
         );
-        console.log(wire.address);
+        //console.log(wire.address);
         return <>{wireDef}</>
     }, (prev, next) => {
         return prev?.path === next.path || props?.wire === next?.wire

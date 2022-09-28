@@ -32,15 +32,20 @@ function Activity(props) {
         selected: activity.selected ?? false
     })
 
+    const heightBasedOnPorts = function() {
+        const numOfPorts = activity.outputs?.length ?? 0;
+        return Math.max(numOfPorts * 16 + (8 - 6), 32);
+    }
+
     const ActivityRect = () => <>
         {/* <g transform="translate(-25,2)" className="elastic-flow-node-button">
             <rect className="elastic-flow-node-button-background" rx="5" ry="5" width="32" height="26"></rect>
             <rect className="elastic-flow-node-button-button" x="5" y="4" rx="4" ry="4" width="16" height="18" fill="#a6bbcf"></rect>
         </g> */}
-        <rect className="elastic-flow-node" rx="2" ry="2" fill={activity.color ?? defaultColor} width="180" height="30"></rect>
+        <rect className="elastic-flow-node" rx="2" ry="2" fill={activity.color ?? defaultColor} width="184" height={heightBasedOnPorts()}></rect>
         <g className="elastic-flow-node-icon-group" x="0" y="0" transform="" /*style="pointer-events: none;"*/>
-            <rect x="0" y="0" className="elastic-flow-node-icon-shade" width="30" height="30"></rect>
-            <image href={"/icons/" + nodeIcon} className="elastic-flow-node-icon" x="0" width="30" height="30" y="0"></image>
+            <rect x="0" y="0" className="elastic-flow-node-icon-shade" width="30" height={heightBasedOnPorts()}></rect>
+            <image href={"/icons/" + nodeIcon} className="elastic-flow-node-icon" x="0" width="30" height={heightBasedOnPorts()} y="0"></image>
             <path d="M 30 1 l 0 28" className="elastic-flow-node-icon-shade-border"></path>
         </g>
         {/*className="styles-elastic-workspace-flow-node-label" */}
@@ -51,7 +56,7 @@ function Activity(props) {
             <rect className="elastic-flow-node-status-ring-red" x="6" y="1" width="9" height="9" rx="2" ry="2" stroke-width="3"></rect>
             <text className="elastic-flow-node-status-label" x="20" y="10"></text>
         </g> */}
-        <rect className="elastic-flow-node-cover" rx="2" ry="2" width="180" height="30"></rect>
+        <rect className="elastic-flow-node-cover" rx="2" ry="2" width="184" height={heightBasedOnPorts()}></rect>
 
 
     </>
@@ -154,8 +159,8 @@ function Activity(props) {
             setPosition({
                 ...position,
                 moving: true,
-                x: snapToGrid(data.x - position.offset.x, 10),
-                y: snapToGrid(data.y - position.offset.y, 10)
+                x: snapToGrid(data.x - position.offset.x, 8),
+                y: snapToGrid(data.y - position.offset.y, 8)
             });
             activity.position.x = position.x;
             activity.position.y = position.y;

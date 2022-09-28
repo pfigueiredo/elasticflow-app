@@ -1,7 +1,5 @@
-import { Spinner, Tree, TreeNode } from '@blueprintjs/core';
+import { Spinner } from '@blueprintjs/core';
 import { useParams as useRouteParams } from 'react-router-dom';
-// import { Helmet } from "react-helmet";
-import { useFlowData } from '../datahooks/useFlowsData'
 import { useFlowLogData } from '../datahooks/useFlowLogData'
 import { useState } from "react";
  
@@ -43,14 +41,22 @@ export const ConsolePage = () => {
     }
 
     const buildLogItem = function(logItem) {
-        const className = `log-item-${logItem.level}`;
+
+
+//log-item-user
+
+        const isUserLog = !!logItem?.isUserLog;
+        const className = `log-item-${logItem.level}` + (isUserLog ? " log-item-user" : "");
+        
+
+        const logTimeClassName = isUserLog ? "log-time-user" : "log-time";
 
         if (logItem.type === "o") {
-            return <div className={className}><span className='log-time'>{formatTime(logItem.time)}</span><br/>{
+            return <div className={className}><span className={logTimeClassName}>{formatTime(logItem.time)}</span><br/>{
                 JSON.stringify(JSON.parse(logItem.message), null, 2)
             }</div>
         } else
-            return <div className={className}><span className='log-time'>{formatTime(logItem.time)}</span> {logItem.message}</div>
+            return <div className={className}><span className={logTimeClassName}>{formatTime(logItem.time)}</span> {logItem.message}</div>
     }
 
     return (

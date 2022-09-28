@@ -3,6 +3,7 @@ import nodes from './Nodes';
 import { FormGroup, InputGroup, Tab, Tabs, Switch, TextArea, Button } from '@blueprintjs/core';
 import { SliderPicker } from 'react-color';
 import { emitCustomEvent } from 'react-custom-events';
+import { IOViewModel } from '../ViewModels/FlowViewModel'
 import ActivityOutput from './ActivityOutput';
 import './ActivityProperties.css'
 
@@ -19,15 +20,15 @@ const importView = viewName =>
 function ActivityProperties({activity}) {
 
     nodes.fillInDefautls(activity);
+    const allowExtraPorts = activity?.allowExtraPorts;
 
     const [views, setViews] = useState([]);
     const [name, setName] = useState(activity?.name ?? "");
     const [comment, setComment] = useState(activity?.comment ?? "");
     const [color, setColor] = useState(activity?.color ?? defaultColor);
-    const [allowExtraPorts, setAllowExtraPorts] = useState(activity?.allowExtraPorts);
     const [hasErrorOutput, setHasErrorOutput] = useState(activity?.hasErrorOutput ?? false);
     const [yieldExecution, setYieldExecution] = useState(activity?.yieldExecution ?? false);
-    const [io] = useState({ outputs: activity?.outputs ?? []});
+    const [io, setIo] = useState({ outputs: activity?.outputs ?? []});
 
     const verticalFlexContainerStyle = {
         display: "flex",
@@ -64,7 +65,19 @@ function ActivityProperties({activity}) {
         }
     }
 
-    function handleAddOutput(e) {}
+    function handleRemoveOutput(e) {}
+
+    function handleAddOutput(e) {
+        if (!!activity) {
+            activity.createOutputPort();
+            setIo({ outputs: activity?.outputs ?? []});
+            emitCustomEvent('activity:change', {
+                address: activity.address,
+                activity: activity
+            });
+            emitCustomEvent('activity:move', { address: activity.address });
+        }
+    }
 
     function handleChangeComment(e) {
         if (!!activity) {
@@ -154,7 +167,7 @@ function ActivityProperties({activity}) {
                 <Switch checked={yieldExecution} label="Yield Execution" onChange={e => handleChangeYieldExecution(e)} />
             </FormGroup>
             <h4>Output Definition</h4>
-            {io.outputs.map(output => <ActivityOutput output={output}></ActivityOutput>)}
+            {io.outputs.map(output => <ActivityOutput output={output} allowExtraPorts={allowExtraPorts} onRemove={handleRemoveOutput}></ActivityOutput>)}
             <AddOutputButton/>
         </>
     }

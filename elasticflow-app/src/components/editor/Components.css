@@ -45,9 +45,10 @@
     stroke-width: 2;
 }
 
-.elastic-flow-node-label .elastic-flow-node-label-text{
+/* .elastic-flow-node-label .elastic-flow-node-label-text {
     dominant-baseline:middle
-}
+} */
+
 .elastic-flow-node-label.elastic-flow-node-label-right .elastic-flow-node-label-text{
     text-anchor:end
 }
@@ -55,7 +56,7 @@
     stroke-width:0;
     fill:#888;
     font-size:16px;
-    dominant-baseline:middle;
+    /* dominant-baseline:middle; */
     text-anchor:middle;
     pointer-events:none;
     -webkit-touch-callout:none;

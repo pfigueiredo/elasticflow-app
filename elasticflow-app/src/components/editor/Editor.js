@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Button, Spinner } from '@blueprintjs/core';
 import { emitCustomEvent, useCustomEventListener } from 'react-custom-events'
 import { useFlowData, useFlowMutation } from '../../datahooks/useFlowsData'
@@ -11,6 +11,7 @@ import Wire from './Wire'
 import PropertiesDrawer from './PropertiesDrawer';
 import CodeEditor from './CodeEditor';
 import { AddActivityDialog } from './AddActivity.dialog';
+import usePan from './Hooks/usePan';
 
 const flowMemo = {};
 
@@ -60,6 +61,7 @@ export const Editor = (props) => {
 
     console.log('loading editor');
 
+    
     const { isLoading, data, isError, error } = useFlowData(props.flowId);
     const [ editorStatus, setEditorStatus ] = useState({ flowId: props.flowId });
     const [ wireInteractions, setWireInteractions ] = useState(0);
@@ -67,6 +69,9 @@ export const Editor = (props) => {
         console.log('recived data after mutation');
         console.log(data);
     });
+
+    const svgRef = useRef();
+    const { viewBox, panActive, panning, panPointerMove, panPointerUp, panPointerDown, getPointFromEvent } = usePan(svgRef)
 
     const flow = (!isLoading) ? buildFlowModel(data.data.Item, isLoading) : null;
 
@@ -159,21 +164,21 @@ export const Editor = (props) => {
     });
 
     function handlePointerMove(e) {
-        const x = e.clientX;
-        const y = e.clientY;
-        emitCustomEvent('editor:mouseMove', {event: e, x: x, y: y});
+        if (panActive) panPointerMove(e);
+        const point = getPointFromEvent(e);
+        emitCustomEvent('editor:mouseMove', {event: e, x: point.x, y: point.y});
     };
     
     function handlePointerDown(e) {
-        const x = e.clientX;
-        const y = e.clientY;
-        emitCustomEvent('editor:mouseDown', {event: e, x: x, y: y});
+        if (panActive) panPointerDown(e);
+        const point = getPointFromEvent(e);
+        emitCustomEvent('editor:mouseDown', {event: e, x: point.x, y: point.y});
     };
     
     function handlePointerUp(e) {
-        const x = e.clientX;
-        const y = e.clientY;
-        emitCustomEvent('editor:mouseUp', {event: e, x: x, y: y});
+        if (panActive) panPointerUp(e);
+        const point = getPointFromEvent(e);
+        emitCustomEvent('editor:mouseUp', {event: e, x: point.x, y: point.y});
     };
 
     const Loader = () => {
@@ -195,13 +200,19 @@ export const Editor = (props) => {
     }
 
     if (isError) return <h2>{error.message}</h2>
+    const cursorStyle = 
+        (panning) ? {cursor: 'grabbing'} : 
+        (panActive) ? {cursor: 'grab'} : 
+        {};
 
     return (
         <><div id="editor-container">
-            <svg height="100%" width="100%" className="elastic-flow-area" id="editorGraphics"
+            <svg viewBox="0 0 1000 1000" className="elastic-flow-area" id="editorGraphics" style={cursorStyle}
+                ref={svgRef}
                 onPointerMove={handlePointerMove}
                 onPointerDown={handlePointerDown}
-                onPointerUp={handlePointerUp}>
+                onPointerUp={handlePointerUp}
+            >
                 <defs>
                     <filter id="double">
                         <feMorphology in="SourceGraphic" result="a" operator="dilate" radius="4" />
@@ -215,14 +226,14 @@ export const Editor = (props) => {
                     </pattern>
                     <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
                         <rect width="80" height="80" fill="url(#smallGrid)"/>
-                        <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#FFA0A0" strokeWidth="1"/>
+                        <path d="M 100 0 L 0 0 0 100" fill="none" stroke="#FFA0A0" strokeWidth="1"/>
                     </pattern>
                     <marker id="wireEndArrow" markerUnits="strokeWidth"
                         markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" >
                         <path d="M0,0 L0,6 L9,3 z" fill="#444" strokeWidth="1" />
                     </marker>
                 </defs>
-                <rect width="100%" height="100%" fill="url(#grid)" />
+                <rect x={-5000} y={-5000} width={10000} height={10000} fill="url(#grid)" />
                 <FlowEditor/>
                 <RadialMenu/>
             </svg>

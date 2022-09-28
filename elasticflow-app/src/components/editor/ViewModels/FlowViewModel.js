@@ -120,13 +120,32 @@ class ActivityViewModel {
         }
 
         this.outputs = (data.outputs)
-             ? data.outputs.map((o, i, arr) => new IOViewModel(o, i, arr, this, "O"))
+             ? data.outputs.map((o, i, arr) => new IOViewModel(o, i, arr.length, this, "O"))
              : [];
 
         //actually we only support one input per node.
         this.inputs = (data.inputs) 
-            ? data.inputs.map((o, i, arr) => new IOViewModel(o, i, arr, this, "I"))
+            ? data.inputs.map((o, i, arr) => new IOViewModel(o, i, arr.length, this, "I"))
             : [];
+    }
+
+    removeOutputPort(index) {
+
+    }
+
+    correctYPosOfPorts() {
+        this.outputs.forEach(o => {
+            o.updateYPos(this.outputs.lenght);
+        });
+    }
+
+    createOutputPort() {
+        const index = this.outputs.length;
+        const port = new IOViewModel({}, index, this.outputs.length + 1, this, "O");
+        console.log(port.posY);
+        this.outputs.push(port);
+        this.correctYPosOfPorts();
+        return port;
     }
 
     getDataForSerialization() {
@@ -157,7 +176,7 @@ class ActivityViewModel {
 };
 
 class IOViewModel {
-    constructor(data, index, allPorts, activity, type) {
+    constructor(data, index, totalPorts, activity, type) {
         this.key = ++activity.flow.keySeed;
         this.activity = activity;
         this.name = data.name ?? "";
@@ -166,10 +185,33 @@ class IOViewModel {
         this.index = index;
         this.color = data.color ?? null;
         this.isErrorOutput = data.isErrorOutput ?? false;
-        this.posY = (allPorts.length < 2) ? 10 : 4 + (12 * index);
+        this.posY = this.getYPos(index, totalPorts);
         this.wires = (data.connections && type === 'O')
             ? data.connections.map(c => new WireViewModel(c, this))
             : [];
+    }
+
+    updateWires() {
+        this.wires.forEach(w => {
+            w.posY = this.posY;
+        });
+    }
+
+    updateYPos(lenght) {
+        this.posY = this.getYPos(this.index, lenght);
+        this.updateWires();
+    }
+
+    getYPos(index, lenght) {
+
+        const y1 = (32 - 10) / 2;
+
+        /**
+         * 8 -5
+         * 24 - 5
+         */
+
+        return (lenght < 2) ? y1 : (8-5) + (16 * index);
     }
 
     getDataForSerialization() {
