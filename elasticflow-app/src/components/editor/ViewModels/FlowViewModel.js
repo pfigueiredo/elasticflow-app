@@ -83,6 +83,31 @@ class FlowViewModel {
         return null;
     }
 
+    deleteActivity(address) {
+        const activity = this.getActivity(address);
+        if (!!activity) {
+            const index = this.activities.indexOf(activity);
+            this.activities.splice(index, 1);
+            this.deleteWiresWithoutDestination();
+        }
+    }
+
+    deleteWiresWithoutDestination() {
+        const wiresToRemove = [];
+        this.activities.forEach(activity => {
+            activity.outputs.forEach(o => {
+                o.wires.forEach(w => {
+                    const destAct = this.getActivity(w.destinationAddress);
+                    if (!destAct) wiresToRemove.push(w);
+                })
+            });
+        });
+
+        wiresToRemove.forEach(wire => {
+            wire.destroyWire();
+        });
+    }
+
     updateWires() {
         this.activities.forEach(activity => {
             activity.outputs.forEach(o => {
@@ -129,13 +154,19 @@ class ActivityViewModel {
             : [];
     }
 
-    removeOutputPort(index) {
-
+    removeOutputPort(io) {
+        let index = this.outputs.indexOf(io);
+        if (index >= 0) {
+            io.destroyWires();
+            this.outputs.splice(index, 1);
+            this.correctYPosOfPorts();
+        }
     }
 
     correctYPosOfPorts() {
-        this.outputs.forEach(o => {
-            o.updateYPos(this.outputs.lenght);
+        this.outputs.forEach((o, i) => {
+            o.index = i;
+            o.updateYPos(this.outputs.length);
         });
     }
 
@@ -197,12 +228,12 @@ class IOViewModel {
         });
     }
 
-    updateYPos(lenght) {
-        this.posY = this.getYPos(this.index, lenght);
+    updateYPos(length) {
+        this.posY = this.getYPos(this.index, length);
         this.updateWires();
     }
 
-    getYPos(index, lenght) {
+    getYPos(index, length) {
 
         const y1 = (32 - 10) / 2;
 
@@ -211,7 +242,7 @@ class IOViewModel {
          * 24 - 5
          */
 
-        return (lenght < 2) ? y1 : (8-5) + (16 * index);
+        return (length < 2) ? y1 : (8-5) + (16 * index);
     }
 
     getDataForSerialization() {
@@ -231,6 +262,10 @@ class IOViewModel {
             w.posY = this.posY;
             w.type = this.type;
         });
+    }
+
+    destroyWires() {
+        this.wires = [];
     }
 
     destroyWire(wire) {

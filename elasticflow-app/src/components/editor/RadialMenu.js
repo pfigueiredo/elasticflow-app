@@ -65,6 +65,7 @@ function RadialMenu(props) {
 
     function onCircleClick(e, command) {
         console.log(command);
+        console.log("circle mouse up!! yes!!");
         e.stopPropagation();
         emitCustomEvent(
             'menu:command', { 
@@ -92,11 +93,19 @@ function RadialMenu(props) {
             })
     });
 
+    const checkMouseUpPropagation = (e) => {
+        console.log("checking propagation of mouseUP");
+        e.stopPropagation();
+    }
+
     useCustomEventListener('editor:mouseUp', data => {
-        // if (status.isOpen) {
-        //     console.log("editor mouse up!! fck");
-        //     setStatus({ isOpen: false, callback: null })
-        // }
+        if (status.isOpen) {
+            console.log("editor mouse up!! fck");
+            setStatus({ isOpen: false, callback: null });
+            const callback = status.callback;
+            callback?.apply(null, [null, true]);
+            emitCustomEvent('editor:refresh', {});
+        }
     });
 
     var circles = [];
@@ -113,7 +122,7 @@ function RadialMenu(props) {
                 <circle transform="translate(18,18)" className="elastic-flow-context-menu-item" cx="0" cy="0" r={circleRadius}></circle>
                 <image transform={"translate(3,3)"}  width={30} height="30" href={"/icons/n/" + images[i]}></image>
                 <circle transform="translate(18,18)" className="elastic-flow-context-menu-item-cover" cx="0" cy="0" r={circleRadius}
-                    onClick={e => onCircleClick(e, command)}></circle>
+                    onClick={e => onCircleClick(e, command)} onPointerUp={checkMouseUpPropagation}></circle>
                 <title>{tips[i]}</title>
             </g>
 
@@ -127,7 +136,7 @@ function RadialMenu(props) {
                 <circle transform="translate(18,18)" className="elastic-flow-context-menu-item" cx="0" cy="0" r={circleRadius * 1.5}></circle>
                 <image transform={"translate(3,3)"}  width={30} height="30" href="/icons/n/plus.svg"></image>
                 <circle transform="translate(18,18)" className="elastic-flow-context-menu-item-cover" cx="0" cy="0" r={circleRadius * 1.5} 
-                    onClick={e => onCircleClick(e, "addNode")}></circle>
+                    onClick={e => onCircleClick(e, "addNode")} onPointerUp={checkMouseUpPropagation}></circle>
                 <title>opens a list of extra available nodes do add</title>
             </g>
         </g>;

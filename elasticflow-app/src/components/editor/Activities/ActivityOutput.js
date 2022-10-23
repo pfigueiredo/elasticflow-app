@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ControlGroup, Classes, InputGroup, HTMLSelect } from '@blueprintjs/core';
+import { ControlGroup, Button, Classes, InputGroup, HTMLSelect } from '@blueprintjs/core';
 
 
-function ActivityOutput({output}) {
+function ActivityOutput({output, allowExtraPorts, onRemove}) {
 
     const [state, setState] = useState({ output: output })
 
@@ -17,10 +17,23 @@ function ActivityOutput({output}) {
         { label: "remote", value: 1 }
     ];
 
+    const handleDelete = (e) => {
+        if (onRemove)
+            onRemove(output);
+    }
+
+    const DeleteButton = ({allowExtraPorts}) => {
+        if (allowExtraPorts) {
+            return <Button className={Classes.FIXED} intent="danger" icon="delete" onClick={handleDelete}></Button>
+        } else
+            return <></>
+    }
+
     return <>
         <ControlGroup key={output?.key} fill={true} vertical={false} style={{marginTop:"10px"}}>
             <HTMLSelect className={Classes.FIXED} options={outputOptions} value={state.output?.type ?? 0} onChange={e => setOuputState(e, "type")}></HTMLSelect>
             <InputGroup leftIcon={(state.output?.isErrorOutput) ? "error" : "tag"} placeholder="Output Name" value={state.output?.name ?? ""} onChange={e => setOuputState(e, "name")}/>
+            <DeleteButton allowExtraPorts={allowExtraPorts} onClick={handleDelete}></DeleteButton>
         </ControlGroup>    
     </>;
 }

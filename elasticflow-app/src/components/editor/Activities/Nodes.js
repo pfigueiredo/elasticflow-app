@@ -87,9 +87,7 @@ nodes["core:fork"] = {
         { name: "Path 1", address: "O1", type: "sync" },
         { name: "Path 2", address: "O2", type: "sync" } 
     ],
-    properties: {
-        conditions: []
-    }
+    properties: { }
 }
 
 nodes["core:foreach"] = {
@@ -102,9 +100,7 @@ nodes["core:foreach"] = {
         { name: "Continue", address: "O1", type: "sync" },
         { name: "Loop", address: "O2", type: "sync", color:"yellow" } 
     ],
-    properties: {
-        conditions: []
-    }
+    properties: { }
 }
 
 nodes["core:continue"] = {
@@ -114,21 +110,17 @@ nodes["core:continue"] = {
     description: "forces the imediate trigger of the next iteraction in a loop",
     inputs: [ { address: "I1", type: "sync" } ],
     outputs: [],
-    properties: {
-        conditions: []
-    }
+    properties: { }
 }
 
 nodes["core:break"] = {
     isNode: true,
     icon: "n/continue.svg",
-    name: "Continue",
+    name: "Break",
     description: "breaks the current loop and continues",
     inputs: [ { address: "I1", type: "sync" } ],
     outputs: [],
-    properties: {
-        conditions: []
-    }
+    properties: { }
 }
 
 nodes["core:loop"] = {
@@ -141,9 +133,7 @@ nodes["core:loop"] = {
         { name: "Continue", address: "O1", type: "sync" },
         { name: "Loop", address: "O2", type: "sync", color:"yellow" } 
     ],
-    properties: {
-        conditions: []
-    }
+    properties: { }
 }
 
 
@@ -213,6 +203,18 @@ nodes["core:trigger"] = {
     description: "triggers the execussion of a new flow and continues",
     inputs: [ { address: "I1", type: "sync" } ],
     outputs: [ { address: "O1", type: "sync" } ]
+}
+
+nodes["core:external"] = {
+    isNode: true,
+    icon: "n/externalCall.svg",
+    name: "External Activity",
+    description: "stops and waits for an external action/activity",
+    inputs: [ { address: "I1", type: "sync" } ],
+    outputs: [ 
+        { name: "Continue", address: "O1", type: "sync" }
+    ],
+    properties: { }
 }
 
 nodes["http:call"] = {

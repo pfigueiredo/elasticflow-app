@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { emitCustomEvent, useCustomEventListener } from 'react-custom-events'
 import './Components.css'
 import FlowAddress from './ViewModels/FlowAddress';
@@ -6,6 +6,7 @@ import nodes from './Activities/Nodes';
 import Port from './Port';
 import snapToGrid from './Utils/Grid';
 import ShallowEqual from './Utils/ShallowCompare';
+import colorUtils from './Utils/colorUtils'
 
 const defaultColor = "#79a7d2";
 
@@ -13,6 +14,9 @@ function Activity(props) {
     
     var activity = props.activity ?? {};
 
+    var color = activity.color ?? defaultColor;
+    var textClass = useMemo(() => colorUtils.getTextClassName(color), [color]);
+    var iconClass = useMemo(() => colorUtils.getIconClassName(color), [color])
     var name = activity.name ?? "unnamed";
     var error = activity.hasErrors ?? activity.error ?? 0;
     var changed = activity.changed ?? 0;
@@ -42,21 +46,22 @@ function Activity(props) {
             <rect className="elastic-flow-node-button-background" rx="5" ry="5" width="32" height="26"></rect>
             <rect className="elastic-flow-node-button-button" x="5" y="4" rx="4" ry="4" width="16" height="18" fill="#a6bbcf"></rect>
         </g> */}
-        <rect className="elastic-flow-node" rx="2" ry="2" fill={activity.color ?? defaultColor} width="184" height={heightBasedOnPorts()}></rect>
+        {/* <rect strokeWidth={0} stroke="#cccccc" transform="translate(-2,-2)" rx="6" ry="6" fill="#ffffff" width="188" height={heightBasedOnPorts() + 4} filter="url(#dropShadow)"></rect> */}
+        <rect className="elastic-flow-node" rx="4" ry="4" fill={color} width="184" height={heightBasedOnPorts()}></rect>
         <g className="elastic-flow-node-icon-group" x="0" y="0" transform="" /*style="pointer-events: none;"*/>
             <rect x="0" y="0" className="elastic-flow-node-icon-shade" width="30" height={heightBasedOnPorts()}></rect>
-            <image href={"/icons/" + nodeIcon} className="elastic-flow-node-icon" x="0" width="30" height={heightBasedOnPorts()} y="0"></image>
+            <image href={"/icons/" + nodeIcon} className={iconClass} x="0" width="30" height={heightBasedOnPorts()} y="0"></image>
             <path d="M 30 1 l 0 28" className="elastic-flow-node-icon-shade-border"></path>
         </g>
         {/*className="styles-elastic-workspace-flow-node-label" */}
         <g className="elastic-workspace-flow-node-label" transform="translate(38,16)">
-            <text className="elastic-flow-node-label-text" x="0" y="0">{name}</text>
+            <text className={textClass} x="0" y="0">{name}</text>
         </g>
         {/* <g className="elastic-flow-node-status-group" transform='translate(180,-10)'>
             <rect className="elastic-flow-node-status-ring-red" x="6" y="1" width="9" height="9" rx="2" ry="2" stroke-width="3"></rect>
             <text className="elastic-flow-node-status-label" x="20" y="10"></text>
         </g> */}
-        <rect className="elastic-flow-node-cover" rx="2" ry="2" width="184" height={heightBasedOnPorts()}></rect>
+        <rect className="elastic-flow-node-cover" rx="4" ry="4" width="184" height={heightBasedOnPorts()}></rect>
 
 
     </>
@@ -106,6 +111,11 @@ function Activity(props) {
             console.log('got: activity:change ' + data.address);
             setStatus({ ...status });
         }
+    });
+
+    useCustomEventListener('activity:unselect', data => {
+            activity.selected = false;
+            setStatus({ selected: false });
     });
 
     useCustomEventListener('activity:select', data => {

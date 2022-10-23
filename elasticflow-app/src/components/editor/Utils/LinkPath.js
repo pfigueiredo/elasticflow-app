@@ -1,12 +1,12 @@
 
  const spreadTable = [
-    [0], 
-    [0, 0],
-    [0, 1, 0],
-    [0, 1, 1, 0],
-    [0, 1, 2, 1, 0],
-    [0, 1, 2, 2, 1, 0],
-    [0, 1, 2, 3, 2, 1, 0],
+          [0], 
+         [0,0],
+        [0,1,0],
+       [0,1,1,0],
+      [0,1,2,1,0],
+     [0,1,2,2,1,0],
+    [0,1,2,3,2,1,0],
  ]
  
  function generateLinkPath(origX, origY, destX, destY, index, total) {
@@ -31,8 +31,7 @@
      let tolerance = 16;
      const grids = 8;
  
-     const radius = 0.1; //props.roundCorner ? 1 : 0;
-     const fractional = true;
+     const radius = 1; //props.roundCorner ? 1 : 0;
  
      const stepX = distanceX / grids;
      const stepY = distanceY / grids;
@@ -43,6 +42,31 @@
  
     let step = Math.min(Math.abs(stepX), Math.abs(stepY));
          
+    function lineT1C() {
+        let path = `
+            M ${coordinates.start.x} ${coordinates.start.y}
+            c ${stem} 0 ${-stem} ${distanceY} ${distanceX} ${distanceY}
+        `;
+        return path;
+    }
+
+    
+
+    function lineT1S() {
+
+        const factor = distanceX * distanceY > 0 ? 1 : -1;
+
+        let path = `
+        M ${coordinates.start.x} ${coordinates.start.y} 
+        h ${stem + indexSpread} 
+        q ${step * radius} 0 ${step * 1 * radius} ${step * factor * radius}
+        V ${coordinates.end.y - step * factor * radius}
+        q 0 ${step * factor * radius} ${step * radius} ${step * factor * radius}
+        H ${coordinates.end.x}
+        `;
+        return path;
+    }
+
     function lineT1() {
         let path = `
             M ${coordinates.start.x} ${coordinates.start.y}
@@ -52,6 +76,27 @@
         `;
         return path;
     }
+
+    function lineT2S() {
+
+        const factor = 1;
+
+        const turnPoint = 
+            (distanceY <= 40) ? 20 :
+            (distanceY <= 48) ? 24 : 32;
+        let path = `
+            M ${coordinates.start.x} ${coordinates.start.y}
+            h ${stem + indexSpread}
+            q ${step * radius} 0 ${step * 1 * radius} ${step * radius}
+            v ${distanceY - turnPoint}
+            q ${step * -radius} 0 ${-step * 1 * -radius} ${-step * radius}
+            h ${distanceX - (stem * 2)}
+            v ${turnPoint}
+            H ${coordinates.end.x}
+        `;
+        return path;
+    }
+
 
     function lineT2() {
         const turnPoint = 
@@ -84,9 +129,9 @@
     
 
      if (distanceX > (stem + tolerance)) {
-        return lineT1();
+        return lineT1S();
      } else if (distanceY > 16) {
-        return lineT2();
+        return lineT2S();
      } else {
         return lineT3();
      }

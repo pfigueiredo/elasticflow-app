@@ -133,9 +133,10 @@ export const HomePage = () => {
             init={particlesInit}
             loaded={particlesLoaded}
             className='home-page-particles' options={particlesOptions}></Particles>
-<svg className='logo-svg' width="60%" height="60%" version="1.1" viewBox="0 0 132.29 132.29" xmlns="http://www.w3.org/2000/svg">
+<svg className='logo-svg' width="60%" height="60%" version="1.1" viewBox="0 0 132.29 132.29" xmlns="http://www.w3.org/2000/svg"
+  style={{zIndex: 1000, position: "relative"}}>
+ <path className="logo-connector" filter="url(#filter)" d="m76.542 78.83v17.313l12.494 15.528" />
  <path className="logo-connector" d="m35.876 78.891v17.313l-17.135 12.494" />
- <path className="logo-connector" d="m76.542 78.83v17.313l12.494 15.528" />
  <path className="logo-connector" d="m96.567 78.712-0.17849 12.137 11.423 6.4255" />
  <path className="logo-connector" d="m50.483 78.651v17.313l1e-6 19.633" />
  <path className="logo-connector" d="m63.362 79.872v17.313" />
@@ -157,6 +158,9 @@ export const HomePage = () => {
  <ellipse className="logo-connector" cx="124.05" cy="35.34" rx="4.5514" ry="4.4621" />
  <text className="logo-text" x="65" y="75" space="preserve"><tspan>e-flows</tspan></text>
 </svg>
-
+<div
+style={{ margin: "auto", width: "fit-content", color: "#ffffff", fontSize: "18px", fontStyle: "italic" }}>
+  the low-code engine powered by the cloud
+</div>
     </div>
 }

@@ -1,6 +1,6 @@
 import React, { lazy, useEffect, useState } from 'react';
 import nodes from './Nodes';
-import { FormGroup, InputGroup, Tab, Tabs, Switch, TextArea, Button } from '@blueprintjs/core';
+import { FormGroup, ControlGroup, Classes, InputGroup, Tab, Tabs, Switch, TextArea, Button } from '@blueprintjs/core';
 import { SliderPicker } from 'react-color';
 import { emitCustomEvent } from 'react-custom-events';
 import { IOViewModel } from '../ViewModels/FlowViewModel'
@@ -65,7 +65,35 @@ function ActivityProperties({activity}) {
         }
     }
 
-    function handleRemoveOutput(e) {}
+    function handleDeleteActivity(e) {
+        const dialogProps = {
+            icon: "confirm",
+            title: "Delete activity node?",
+            message: "This action will delete the current activity node. Confirm?",
+            cancelButtonName: "No",
+            confirmButtonName: "Confirm"
+        }
+        emitCustomEvent('editor:confirm', {
+            dialogProps: dialogProps,
+            callback: () => {
+                emitCustomEvent('activity:unselect', {});
+                emitCustomEvent('activity:delete', { activity: activity });
+            }
+        });
+    }
+
+    function handleRemoveOutput(io) {
+        if (activity) {
+            activity.removeOutputPort(io);
+            setIo({ outputs: activity?.outputs ?? []});
+            emitCustomEvent('editor:refresh', {});
+            emitCustomEvent('activity:change', {
+                address: activity.address,
+                activity: activity
+            });
+            emitCustomEvent('activity:move', { address: activity.address });
+        }
+    }
 
     function handleAddOutput(e) {
         if (!!activity) {
@@ -132,12 +160,15 @@ function ActivityProperties({activity}) {
                 helperText="Name to assign to the current selected activity"
                 fill={true}
             >
-                <InputGroup
-                    leftIcon="bookmark"
-                    onChange={onNameChange}
-                    placeholder="Activity name..."
-                    value={name}
-                />
+                <ControlGroup fill={true} vertical={false}>
+                    <InputGroup
+                        leftIcon="bookmark"
+                        onChange={onNameChange}
+                        placeholder="Activity name..."
+                        value={name}
+                    />
+                    <Button className={Classes.FIXED} intent="danger" icon="delete" onClick={handleDeleteActivity}></Button>
+                </ControlGroup>
             </FormGroup>
             <React.Suspense fallback='Loading property views...'>
                 {views}      

@@ -76,6 +76,29 @@ function Wire(props) {
         }
     });
 
+    function handleWireDelete(e) {
+
+        console.log(e);
+
+        e.stopPropagation();
+
+        const dialogProps = {
+            icon: "confirm",
+            title: "Delete wire?",
+            message: "This action will delete the wire. Confirm?",
+            cancelButtonName: "No",
+            confirmButtonName: "Confirm"
+        }
+        emitCustomEvent('editor:confirm', {
+            dialogProps: dialogProps,
+            callback: () => {
+                wire.destroyWire();
+                emitCustomEvent('editor:refresh', {});
+            }
+        });
+
+    }
+
     function handleLabelPointerDown(e) {
         const el = e.target;
         const bbox = e.target.getBoundingClientRect();
@@ -141,8 +164,8 @@ function Wire(props) {
                 emitCustomEvent("editor:openContextMenu", { 
                     x: coords.end.x, 
                     y: coords.end.y, 
-                    callback: function(activity) {
-                        if (!activity) {
+                    callback: function(activity, forceDestroy) {
+                        if (!activity || forceDestroy) {
                             if (!wire.destination) {
                                 emitCustomEvent('wire:destroyWire', { wire: wire });
                                 wire.destroyWire();
@@ -245,7 +268,9 @@ function Wire(props) {
         //     }}/>);
         // }
         wireDef.push(
-            <path id={wire.key} className={classes} d={coords.path} markerEnd="url(#wireEndArrow)" style={{
+            <path id={wire.key} className={classes} d={coords.path} markerEnd="url(#wireEndArrow)" 
+                onPointerUp={handleWireDelete}
+            style={{
                 strokeDasharray: dashArray,
                 fill: "none",
                 cursor: 'pointer'

@@ -1,3 +1,5 @@
+
+
 .elastic-flow-area {
     font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;
     font-size: 14px;
@@ -431,4 +433,22 @@ g.elastic-flow-link-unknown path.elastic-flow-link-line{
     -moz-user-select:none;
     -ms-user-select:none;
     user-select:none
+}
+
+.icon-white {
+    -webkit-filter: saturate(0) brightness(100%);
+    filter: saturate(0) brightness(100%)
+}
+
+.icon-black {
+    -webkit-filter: saturate(0) brightness(30%);
+    filter: saturate(0) brightness(30%)
+}
+
+.text-black {
+    fill: #222;
+}
+
+.text-white {
+    fill: #EEE;
 }

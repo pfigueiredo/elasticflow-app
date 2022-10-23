@@ -22,8 +22,8 @@ function View({activity}) {
     console.log(activity.properties)
 
     const booleanOptions = [
-        { label: "any",  value: "0", helperText: "of the following conditions are true" },
-        { label: "all",  value: "1", helperText: "of the following conditions are true" },
+        { label: "any (OR)",  value: "0", helperText: "of the following conditions are true" },
+        { label: "all (AND)",  value: "1", helperText: "of the following conditions are true" },
     ];
 
     const compareOptions = [

@@ -11,6 +11,7 @@ import Wire from './Wire'
 import PropertiesDrawer from './PropertiesDrawer';
 import CodeEditor from './CodeEditor';
 import { AddActivityDialog } from './AddActivity.dialog';
+import { ConfirmDialog } from './Confirm.dialog' 
 import usePan from './Hooks/usePan';
 
 const flowMemo = {};
@@ -71,7 +72,7 @@ export const Editor = (props) => {
     });
 
     const svgRef = useRef();
-    const { viewBox, panActive, panning, panPointerMove, panPointerUp, panPointerDown, getPointFromEvent } = usePan(svgRef)
+    const { panActive, panning, panPointerMove, panPointerUp, panPointerDown, getPointFromEvent } = usePan(svgRef)
 
     const flow = (!isLoading) ? buildFlowModel(data.data.Item, isLoading) : null;
 
@@ -79,6 +80,7 @@ export const Editor = (props) => {
     const [wires, dragWires] = useMemo(() => sliptWires(flow, wireInteractions), [flow, wireInteractions]);
 
     useCustomEventListener('editor:refresh', data => {
+        setWireInteractions(wireInteractions + 1);
         setEditorStatus({...editorStatus});
     });
   
@@ -101,6 +103,13 @@ export const Editor = (props) => {
         if (!!wire) {
           setWireInteractions(wireInteractions + 1);
         }
+    });
+
+    useCustomEventListener('activity:delete', data => {
+        const activity = data.activity;
+        flow.deleteActivity(activity.address);
+        //force rebuild of wires;
+        setWireInteractions(wireInteractions + 1);
     });
 
     function saveFlow() {
@@ -219,7 +228,7 @@ export const Editor = (props) => {
                         <feComposite in="SourceGraphic" in2="a" result="xx" operator="xor" />
                     </filter>
                     <filter id='dropShadow' colorInterpolationFilters="sRGB">
-                        <feDropShadow dx="2" dy="2" stdDeviation="3" floodOpacity="0.2"/>
+                        <feDropShadow dx="0" dy="0" stdDeviation="2" floodOpacity="0.5"/>
                     </filter>
                     <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
                         <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#A0A0A0" strokeWidth="0.5"/>
@@ -241,6 +250,7 @@ export const Editor = (props) => {
         <PropertiesDrawer></PropertiesDrawer>
         <CodeEditor editor={editorStatus}></CodeEditor>
         <AddActivityDialog></AddActivityDialog>
+        <ConfirmDialog></ConfirmDialog>
         <Loader/>
         <div style={{position: "absolute", top: "60px", right: "10px", zIndex: "2"}}>
             <Button icon="plus" intent='primary' onClick={() => addNode()} style={{marginRight: "20px"}}></Button>
@@ -248,6 +258,7 @@ export const Editor = (props) => {
                 onClick={() => saveFlow()}
                 >Save Flow Definition</Button>
         </div>
+        
         
         </>
     )

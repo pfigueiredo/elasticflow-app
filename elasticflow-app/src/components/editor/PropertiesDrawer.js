@@ -21,6 +21,12 @@ function PropertiesDrawer(props) {
         setTitle(title);
     });
 
+    useCustomEventListener('activity:unselect', data => {
+        setShow(false);
+        setObject(null);
+        setTitle("");
+    })
+
     const verticalFlexContainerStyle = {
         display: "flex",
         flexDirection: "column",

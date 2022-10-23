@@ -67,5 +67,5 @@ function Port(props) {
 export default React.memo(Port, (prev, next) => {
     const previo = prev.io ?? {};
     const nextio = next.io ?? {};
-    return (previo.color !== nextio.color || previo.name !== nextio.name);
+    return (previo.color !== nextio.color || previo.name !== nextio.name || previo.posY !== nextio.posY);
 });
