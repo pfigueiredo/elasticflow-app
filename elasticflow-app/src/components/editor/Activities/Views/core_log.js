@@ -35,7 +35,7 @@ function View({activity}) {
 
     const [properties, setProperties] = useState(baseState);
     const [selectedOrigin, setSelectedOrigin] = useState(originOptions[properties?.origin ?? "0"]);
-    const [selectedLevel, setSelectedLevel] = useState(originOptions[properties?.level ?? "0"]);
+    const [selectedLevel, setSelectedLevel] = useState(logLevels[properties?.level ?? "0"]);
     const [expression, setExpression] = useState(properties?.expression);
 
     function updateProperties(properties) {
