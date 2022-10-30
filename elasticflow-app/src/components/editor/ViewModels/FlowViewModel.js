@@ -215,6 +215,8 @@ class IOViewModel {
         this.type = data.type ?? "sync";
         this.index = index;
         this.color = data.color ?? null;
+        this.defer = !!data.defer;
+        this.locked = !!data.locked;
         this.isErrorOutput = data.isErrorOutput ?? false;
         this.posY = this.getYPos(index, totalPorts);
         this.wires = (data.connections && type === 'O')
@@ -251,6 +253,8 @@ class IOViewModel {
             name: this.name,
             type: this.type,
             color: this.color,
+            defer: this.defer,
+            locked: this.locked,
             isErrorOutput: this.isErrorOutput,
             connections: this.wires.map(w => w.destinationAddress)
         }
