@@ -60,8 +60,9 @@ function Wire(props) {
     const highlight = (source?.selected || destination?.selected);
     const solidDashArray = "28,2"; // highlight ? "28,2" : "0";
     const remoteDash = "10,5"; //"8,2,2,2,2,2,8,4"
+    const isDashed = ((wire.io?.type?.toString() ?? "1") === "1") || wire.io?.defer;
 
-    const dashArray = (((wire.io?.type?.toString() ?? "1") === "1") ? remoteDash: solidDashArray);
+    const dashArray = (isDashed ? remoteDash: solidDashArray);
     const classes = highlight ? "elastic-flow-wire-selected" : "elastic-flow-wire";
 
     const [coords, setCoords] = useState(() => getCoords(source, destination, wire, props.dragging));    
