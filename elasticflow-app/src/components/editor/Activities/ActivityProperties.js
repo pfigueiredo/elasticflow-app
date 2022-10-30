@@ -1,9 +1,8 @@
 import React, { lazy, useEffect, useState } from 'react';
 import nodes from './Nodes';
-import { FormGroup, ControlGroup, Classes, InputGroup, Tab, Tabs, Switch, TextArea, Button } from '@blueprintjs/core';
+import { FormGroup, ControlGroup, Classes, InputGroup, Tab, Tabs, TextArea, Button } from '@blueprintjs/core';
 import { SliderPicker } from 'react-color';
 import { emitCustomEvent } from 'react-custom-events';
-import { IOViewModel } from '../ViewModels/FlowViewModel'
 import ActivityOutput from './ActivityOutput';
 import './ActivityProperties.css'
 
@@ -26,8 +25,6 @@ function ActivityProperties({activity}) {
     const [name, setName] = useState(activity?.name ?? "");
     const [comment, setComment] = useState(activity?.comment ?? "");
     const [color, setColor] = useState(activity?.color ?? defaultColor);
-    const [hasErrorOutput, setHasErrorOutput] = useState(activity?.hasErrorOutput ?? false);
-    const [yieldExecution, setYieldExecution] = useState(activity?.yieldExecution ?? false);
     const [io, setIo] = useState({ outputs: activity?.outputs ?? []});
 
     const verticalFlexContainerStyle = {
@@ -119,30 +116,6 @@ function ActivityProperties({activity}) {
         }
     }
 
-    function handleChangeHasErrorOutput(e) {
-        if (!!activity) {
-            let value = e.currentTarget.checked;
-            activity.hasErrorOutput = value;
-            setHasErrorOutput(value);
-            emitCustomEvent('activity:change', {
-                address: activity.address,
-                activity: activity
-            });
-        }
-    }
-
-    function handleChangeYieldExecution(e) {
-        if (!!activity) {
-            let value = e.currentTarget.checked;
-            activity.yieldExecution = value;
-            setYieldExecution(value);
-            emitCustomEvent('activity:change', {
-                address: activity.address,
-                activity: activity
-            });
-        }
-    }
-
     useEffect(() => {
         async function loadViews() {
             let viewName = (activity?.type ?? "null").replace(":", "_");
@@ -187,16 +160,6 @@ function ActivityProperties({activity}) {
 
     const RenderOutputProperties = () => {
         return <>
-            <FormGroup 
-                helperText="Does this activity have an adicional output for catching errors?"
-                fill={true}>
-                <Switch checked={hasErrorOutput} label="Error Output" onChange={e => handleChangeHasErrorOutput(e)} />
-            </FormGroup>
-            <FormGroup 
-                helperText="After executing the activity save all the process messages and continue asynchronously?"
-                fill={true}>
-                <Switch checked={yieldExecution} label="Yield Execution" onChange={e => handleChangeYieldExecution(e)} />
-            </FormGroup>
             <h4>Output Definition</h4>
             {io.outputs.map(output => <ActivityOutput output={output} allowExtraPorts={allowExtraPorts} onRemove={handleRemoveOutput}></ActivityOutput>)}
             <AddOutputButton/>
@@ -232,6 +195,9 @@ function ActivityProperties({activity}) {
         </>
     }
 
+    const RenderDebug = () => {
+        return <></>;
+    }
 
     if (!activity) {
         return <span>No object selected</span>
@@ -240,6 +206,7 @@ function ActivityProperties({activity}) {
             <Tab id="p" title="Properties" panel={RenderProperties()}/>
             <Tab id="o" title="Outputs" panel={RenderOutputProperties()}/>
             <Tab id="a" title="Appearance" panel={RenderAppearance()}/>
+            <Tab id="d" title="Debug" panel={RenderDebug()}/>
         </Tabs>
     </>
 }
