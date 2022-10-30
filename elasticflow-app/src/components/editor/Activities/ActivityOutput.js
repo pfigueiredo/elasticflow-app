@@ -31,7 +31,7 @@ function ActivityOutput({output, allowExtraPorts, onRemove}) {
 
     return <>
         <ControlGroup key={output?.key} fill={true} vertical={false} style={{marginTop:"10px"}}>
-            <HTMLSelect className={Classes.FIXED} options={outputOptions} value={state.output?.type ?? 0} onChange={e => setOuputState(e, "type")}></HTMLSelect>
+            <HTMLSelect disabled={state.output?.locked ?? false} className={Classes.FIXED} options={outputOptions} value={state.output?.type ?? 0} onChange={e => setOuputState(e, "type")}></HTMLSelect>
             <InputGroup leftIcon={(state.output?.isErrorOutput) ? "error" : "tag"} placeholder="Output Name" value={state.output?.name ?? ""} onChange={e => setOuputState(e, "name")}/>
             <DeleteButton allowExtraPorts={allowExtraPorts} onClick={handleDelete}></DeleteButton>
         </ControlGroup>    
