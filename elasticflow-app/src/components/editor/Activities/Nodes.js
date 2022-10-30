@@ -212,7 +212,8 @@ nodes["core:external"] = {
     description: "stops and waits for an external action/activity",
     inputs: [ { address: "I1", type: "sync" } ],
     outputs: [ 
-        { name: "Continue", address: "O1", type: "sync" }
+        { name: "Continue", address: "O1", type: "sync", defer:true, locked:true },
+        { name: "Stop", address: "O2", type: "sync",  color:"yellow", locked:true } 
     ],
     properties: { }
 }
